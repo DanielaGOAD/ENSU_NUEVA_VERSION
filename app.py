@@ -90,6 +90,18 @@ otro_problema = {
 conocimiento_programas = {
     "BP3_2A": "Conoce programas de prevención contra la violencia/delincuencia"
 }
+
+# --- 🆕 Grupo 9: Incivilidades en los alrededores de su vivienda
+Incivilidades = {
+   "BP1_4_1": "Vandalismo (grafitis, pintas, vidrios quebrados o daños) en las viviendas o negocios",
+   "BP1_4_2": "Consumo de alcohol en las calles",
+   "BP1_4_3": "Robos o asaltos",
+   "BP1_4_4": "Bandas violentas o pandillerismo",
+   "BP1_4_5": "Venta o consumo de droga",
+   "BP1_4_6": "Disparos frecuentes con armas",
+   "BP1_4_7": "Robo o venta ilegal de gasolina o diésel (huachicol)",
+   "BP1_4_8": "Tomas irregulares de luz (energía eléctrica) o diablitos"
+}
 # --- Mapeo de códigos de ciudad a nombres ---
 mapeo_ciudades = {
     1: "AGUASCALIENTES",
@@ -202,6 +214,7 @@ def cargar_datos_base():
         + list(efectividad_gobierno.keys())
         + list(otro_problema.keys())
         + list(conocimiento_programas.keys())
+        + list(Incivilidades.keys())
     )
 
     dtype_dict = {
@@ -256,6 +269,7 @@ Explora el **histórico trimestral (2016–2025)** sobre:
 - 🏛️ Efectividad del gobierno para resolver problemas
 - 🚧 Problemas que enfrenta la ciudad
 - 📢 Conocimiento de programas de prevención contra la violencia/delincuencia
+- 🙅🏻‍♀️ Incivilidades en los alrededores de su vivienda
 """)
 
 # --- Selección del tipo de indicador ---
@@ -269,7 +283,8 @@ tipo_variable = st.radio(
         "Expectativas sobre delincuencia",
         "Efectividad del gobierno para resolver problemas",
         "Problemas que enfrenta la ciudad",
-        "Conocimiento de programas de prevención contra la violencia/delincuencia"
+        "Conocimiento de programas de prevención contra la violencia/delincuencia",
+        "Incivilidades en los alrededores de su vivienda"
     ]
 )
 
@@ -288,8 +303,10 @@ elif tipo_variable == "Efectividad del gobierno para resolver problemas":
     opciones = efectividad_gobierno
 elif tipo_variable == "Problemas que enfrenta la ciudad":
     opciones = otro_problema
-else:
+elif tipo_variable == "Conocimiento de programas de prevención contra la violencia/delincuencia":
     opciones = conocimiento_programas
+else:
+    opciones = Incivilidades
 
 variable_sel = st.selectbox("Selecciona la variable:", list(opciones.values()))
 
@@ -330,7 +347,7 @@ elif tipo_variable == "Efectividad de autoridades (2021–2023)":
 # --- Función calcular_porcentaje (igual que antes) ---
 def calcular_porcentaje(df, col, tipo):
     # [Misma función que ya tienes, sin cambios]
-    if tipo == "Conocimiento de programas de prevención contra la violencia/delincuencia":
+    if tipo in ["Conocimiento de programas de prevención contra la violencia/delincuencia", "Incivilidades en los alrededores de su vivienda"]:
         df_val = df[df[col].isin([1, 2, 9])].copy()
         if df_val.empty:
             return pd.DataFrame(columns=["ANIO", "TRIMESTRE", "PORCENTAJE"])
