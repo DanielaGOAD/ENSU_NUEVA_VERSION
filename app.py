@@ -414,79 +414,69 @@ else:
     # Caso especial: Expectativas sobre delincuencia
     if tipo_variable == "Expectativas sobre delincuencia":
 
-    comparacion = resumen1[
-        ["PERIODO", "PORCENTAJE_TOTAL"]
-    ].rename(
-        columns={"PORCENTAJE_TOTAL": ciudad_1}
-    )
-
-    comparacion = comparacion.merge(
-        resumen2[
+        comparacion = resumen1[
             ["PERIODO", "PORCENTAJE_TOTAL"]
         ].rename(
-            columns={"PORCENTAJE_TOTAL": ciudad_2}
-        ),
-        on="PERIODO",
-        how="outer"
-    )
+            columns={"PORCENTAJE_TOTAL": ciudad_1}
+        )
 
-    comparacion = comparacion.merge(
-        resumen_nacional[
-            ["PERIODO", "PORCENTAJE_TOTAL"]
-        ].rename(
-            columns={"PORCENTAJE_TOTAL": "TOTAL NACIONAL"}
-        ),
-        on="PERIODO",
-        how="outer"
-    )
+        comparacion = comparacion.merge(
+            resumen2[
+                ["PERIODO", "PORCENTAJE_TOTAL"]
+            ].rename(
+                columns={"PORCENTAJE_TOTAL": ciudad_2}
+            ),
+            on="PERIODO",
+            how="outer"
+        )
 
-    st.dataframe(comparacion)
+        comparacion = comparacion.merge(
+            resumen_nacional[
+                ["PERIODO", "PORCENTAJE_TOTAL"]
+            ].rename(
+                columns={"PORCENTAJE_TOTAL": "TOTAL NACIONAL"}
+            ),
+            on="PERIODO",
+            how="outer"
+        )
 
-    grafica = comparacion.set_index("PERIODO")
+        st.dataframe(comparacion)
 
-    st.line_chart(grafica)
-
-        # Gráfica usando el indicador publicado por INEGI
-        grafica = comparacion.set_index("PERIODO")[
-            [
-                f"PORCENTAJE_TOTAL_{ciudad_1}",
-                f"PORCENTAJE_TOTAL_{ciudad_2}"
-            ]
-        ]
+        grafica = comparacion.set_index("PERIODO")
 
         st.line_chart(grafica)
 
     # Todas las demás variables
     else:
 
-                  comparacion = resumen1[
-              ["PERIODO", "PORCENTAJE"]
-          ].rename(
-              columns={"PORCENTAJE": ciudad_1}
-          )
+        comparacion = resumen1[
+            ["PERIODO", "PORCENTAJE"]
+        ].rename(
+            columns={"PORCENTAJE": ciudad_1}
+        )
 
-          comparacion = comparacion.merge(
-              resumen2[
-                  ["PERIODO", "PORCENTAJE"]
-              ].rename(
-                  columns={"PORCENTAJE": ciudad_2}
-              ),
-              on="PERIODO",
-              how="outer"
-          )
+        comparacion = comparacion.merge(
+            resumen2[
+                ["PERIODO", "PORCENTAJE"]
+            ].rename(
+                columns={"PORCENTAJE": ciudad_2}
+            ),
+            on="PERIODO",
+            how="outer"
+        )
 
-          comparacion = comparacion.merge(
-              resumen_nacional[
-                  ["PERIODO", "PORCENTAJE"]
-              ].rename(
-                  columns={"PORCENTAJE": "TOTAL NACIONAL"}
-              ),
-              on="PERIODO",
-              how="outer"
-          )
+        comparacion = comparacion.merge(
+            resumen_nacional[
+                ["PERIODO", "PORCENTAJE"]
+            ].rename(
+                columns={"PORCENTAJE": "TOTAL NACIONAL"}
+            ),
+            on="PERIODO",
+            how="outer"
+        )
 
-          st.dataframe(comparacion)
+        st.dataframe(comparacion)
 
-          grafica = comparacion.set_index("PERIODO")
+        grafica = comparacion.set_index("PERIODO")
 
-          st.line_chart(grafica)
+        st.line_chart(grafica)
