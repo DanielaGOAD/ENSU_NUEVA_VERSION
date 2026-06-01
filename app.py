@@ -293,7 +293,7 @@ else:
 
 variable_sel = st.selectbox("Selecciona la variable:", list(opciones.values()))
 
-nombres_ciudades = sorted(
+nombres_ciudades = ["TOTAL NACIONAL"] + sorted(
     df[df["NOMBRE_CIUDAD"] != "Desconocido"]["NOMBRE_CIUDAD"].unique()
 )
 
@@ -396,9 +396,9 @@ def calcular_porcentaje(df, col, tipo):
     return resumen.sort_values(["ANIO", "TRIMESTRE"])
 
 # --- Mostrar resultados ---
-# --- Mostrar resultados ---
 resumen1 = calcular_porcentaje(df_ciudad1, variable_col, tipo_variable)
 resumen2 = calcular_porcentaje(df_ciudad2, variable_col, tipo_variable)
+resumen_nacional = calcular_porcentaje(df, variable_col, tipo_variable)
 
 if resumen1.empty or resumen2.empty:
     st.warning(
@@ -414,29 +414,37 @@ else:
     # Caso especial: Expectativas sobre delincuencia
     if tipo_variable == "Expectativas sobre delincuencia":
 
-        comparacion = pd.merge(
-            resumen1[
-                [
-                    "PERIODO",
-                    "PORCENTAJE_IGUAL",
-                    "PORCENTAJE_EMPEORARA",
-                    "PORCENTAJE_TOTAL"
-                ]
-            ],
-            resumen2[
-                [
-                    "PERIODO",
-                    "PORCENTAJE_IGUAL",
-                    "PORCENTAJE_EMPEORARA",
-                    "PORCENTAJE_TOTAL"
-                ]
-            ],
-            on="PERIODO",
-            how="outer",
-            suffixes=(f"_{ciudad_1}", f"_{ciudad_2}")
-        )
+    comparacion = resumen1[
+        ["PERIODO", "PORCENTAJE_TOTAL"]
+    ].rename(
+        columns={"PORCENTAJE_TOTAL": ciudad_1}
+    )
 
-        st.dataframe(comparacion)
+    comparacion = comparacion.merge(
+        resumen2[
+            ["PERIODO", "PORCENTAJE_TOTAL"]
+        ].rename(
+            columns={"PORCENTAJE_TOTAL": ciudad_2}
+        ),
+        on="PERIODO",
+        how="outer"
+    )
+
+    comparacion = comparacion.merge(
+        resumen_nacional[
+            ["PERIODO", "PORCENTAJE_TOTAL"]
+        ].rename(
+            columns={"PORCENTAJE_TOTAL": "TOTAL NACIONAL"}
+        ),
+        on="PERIODO",
+        how="outer"
+    )
+
+    st.dataframe(comparacion)
+
+    grafica = comparacion.set_index("PERIODO")
+
+    st.line_chart(grafica)
 
         # Gráfica usando el indicador publicado por INEGI
         grafica = comparacion.set_index("PERIODO")[
@@ -451,16 +459,34 @@ else:
     # Todas las demás variables
     else:
 
-        comparacion = pd.merge(
-            resumen1[["PERIODO", "PORCENTAJE"]],
-            resumen2[["PERIODO", "PORCENTAJE"]],
-            on="PERIODO",
-            how="outer",
-            suffixes=(f"_{ciudad_1}", f"_{ciudad_2}")
-        )
+                  comparacion = resumen1[
+              ["PERIODO", "PORCENTAJE"]
+          ].rename(
+              columns={"PORCENTAJE": ciudad_1}
+          )
 
-        st.dataframe(comparacion)
+          comparacion = comparacion.merge(
+              resumen2[
+                  ["PERIODO", "PORCENTAJE"]
+              ].rename(
+                  columns={"PORCENTAJE": ciudad_2}
+              ),
+              on="PERIODO",
+              how="outer"
+          )
 
-        grafica = comparacion.set_index("PERIODO")
+          comparacion = comparacion.merge(
+              resumen_nacional[
+                  ["PERIODO", "PORCENTAJE"]
+              ].rename(
+                  columns={"PORCENTAJE": "TOTAL NACIONAL"}
+              ),
+              on="PERIODO",
+              how="outer"
+          )
 
-        st.line_chart(grafica)
+          st.dataframe(comparacion)
+
+          grafica = comparacion.set_index("PERIODO")
+
+          st.line_chart(grafica)
