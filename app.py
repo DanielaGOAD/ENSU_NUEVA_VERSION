@@ -124,7 +124,8 @@ def cargar_datos_base():
     file_ids = [
         "1VLMGozkGzj1eETDBAMQU296P2Z4r1wpY",
         "1qktfndQFrzc-RRzJ6fF-vXNnGwttz6kD",
-        "1bBLpttRIooK1EzK8emfK1GyZ_oAqf3iL" # 🔁 ¡REEMPLAZA ESTO con el ID del nuevo CSV!
+        "1bBLpttRIooK1EzK8emfK1GyZ_oAqf3iL" ,
+        "19b6Fa7WdQoJtH0aBa9tYpYz9XeJWtXI_"
     ]
 
     columnas_necesarias = (
